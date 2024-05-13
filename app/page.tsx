@@ -57,7 +57,12 @@ export default function Home() {
           color={"primary"}
           onPress={() =>
             navigator.clipboard
-              .writeText(template.replace("[TEXT]", prompt))
+              .writeText(
+                template
+                  .replace("[COMPANY]", company)
+                  .replace("[QUESTION]", question)
+                  .replace("[TEXT]", prompt),
+              )
               .catch(console.error)
           }
         >
