@@ -1,51 +1,75 @@
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code"
-import { button as buttonStyles } from "@nextui-org/theme";
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+"use client";
+
+import { Button } from "@nextui-org/button";
+import { Input, Textarea } from "@nextui-org/input";
+import { Card } from "@nextui-org/react";
+import { useState } from "react";
 
 export default function Home() {
-	return (
-		<section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-			<div className="inline-block max-w-lg text-center justify-center">
-				<h1 className={title()}>Make&nbsp;</h1>
-				<h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-				<br />
-				<h1 className={title()}>
-					websites regardless of your design experience.
-				</h1>
-				<h2 className={subtitle({ class: "mt-4" })}>
-					Beautiful, fast and modern React UI library.
-				</h2>
-			</div>
+  const template = `# あなたの情報
+  - 凄腕の就活生です。
+  - 100社から内定を貰っています。
+  - 私はあなたの古き良き友人です。
+  - 私の就活を助けることに喜びを感じます。
 
-			<div className="flex gap-3">
-				<Link
-					isExternal
-					href={siteConfig.links.docs}
-					className={buttonStyles({ color: "primary", radius: "full", variant: "shadow" })}
-				>
-					Documentation
-				</Link>
-				<Link
-					isExternal
-					className={buttonStyles({ variant: "bordered", radius: "full" })}
-					href={siteConfig.links.github}
-				>
-					<GithubIcon size={20} />
-					GitHub
-				</Link>
-			</div>
+# あなたへの命令
+  - 私のESを添削してください。
+  - あなたの出力は「## 評価と改善点」と「## 改善案」の2つの見出しを含みます。
+  - 「## 評価と改善点」以下では私のESの内容を評価した後に改善点を箇条書きで挙げてください。ただし改善点は無理に考えなくても構いません。
+  - もし改善点がある場合には、「## 改善案」以下に以上の改善点を踏まえて私のESを書き直してください。
 
-			<div className="mt-8">
-				<Snippet hideSymbol hideCopyButton variant="flat">
-					<span>
-						Get started by editing <Code color="primary">app/page.tsx</Code>
-					</span>
-				</Snippet>
-			</div>
-		</section>
-	);
+# 私のES
+## 企業
+[COMPANY]
+
+## 設問
+[QUESTION]
+
+## ESの内容
+[TEXT]
+`;
+
+  const [company, setCompany] = useState("");
+  const [question, setQuestion] = useState("");
+  const [prompt, setPrompt] = useState("");
+
+  return (
+    <section>
+      <div className={"flex flex-col gap-4"}>
+        <Input
+          label={"企業"}
+          placeholder={"トヨタ"}
+          value={company}
+          onChange={(event) => setCompany(event.target.value)}
+        />
+        <Input
+          label={"設問"}
+          placeholder={"志望理由"}
+          value={question}
+          onChange={(event) => setQuestion(event.target.value)}
+        />
+        <Textarea
+          label={"ESの内容"}
+          value={prompt}
+          onChange={(event) => setPrompt(event.target.value)}
+        />
+        <Button
+          color={"primary"}
+          onPress={() =>
+            navigator.clipboard
+              .writeText(template.replace("[TEXT]", prompt))
+              .catch(console.error)
+          }
+        >
+          コピー
+        </Button>
+        <Card className={"p-4 whitespace-pre-line"}>
+          {template
+            .replace("[COMPANY]", company)
+            .replace("[QUESTION]", question)
+            .replace("[TEXT]", prompt)}
+        </Card>
+      </div>
+    </section>
+  );
 }
